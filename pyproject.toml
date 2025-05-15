@@ -1,0 +1,21 @@
+[project]
+name = "Technical_Content_Writer"
+version = "0.1.0"
+description = "technical_content_writer using crewAI"
+authors = [{ name = "AShish Kumar", email = "ashi.patel546@gmail.com" }]
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "crewai[tools]>=0.120.1,<1.0.0",
+]
+
+[project.scripts]
+kickoff = "technical_content_writer.main:kickoff"
+run_crew = "technical_content_writer.main:kickoff"
+plot = "technical_content_writer.main:plot"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "flow"
