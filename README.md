@@ -15,6 +15,7 @@ pip install uv
 Next, navigate to your project directory and install the dependencies:
 
 (Optional) Lock the dependencies and install them by using the CLI command:
+
 ```bash
 crewai install
 ```
@@ -31,6 +32,8 @@ crewai install
 
 ## Running the Project
 
+### Option 1: Using CrewAI CLI
+
 To kickstart your flow and begin execution, run this from the root folder of your project:
 
 ```bash
@@ -40,6 +43,27 @@ crewai run
 This command initializes the technical_content_writer Flow as defined in your configuration.
 
 This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+
+### Option 2: Using the Gradio Web Interface
+
+For a more user-friendly interface, you can run the Gradio web application using the provided shell script:
+
+```bash
+./start_app.sh
+```
+
+This script will:
+
+- 🔧 Automatically create a virtual environment (if it doesn't exist)
+- 📦 Install all required dependencies using `uv sync`
+- 🚀 Launch the Gradio web interface at `http://localhost:7860`
+
+**Prerequisites for the shell script:**
+
+- Ensure you have `uv` installed (the script will check and notify you if it's missing)
+- Make the script executable: `chmod +x start_app.sh`
+
+The Gradio interface provides an intuitive web-based way to interact with your Technical Content Writer crew, allowing you to input topics and generate content through a clean, user-friendly interface.
 
 ## Understanding Your Crew
 

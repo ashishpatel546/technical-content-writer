@@ -1,7 +1,7 @@
 write_section_task:
   description: >
-    Write a comprehensive section on the topic: "{topic}"
-    Target audience: {audience_level} level learners
+    Write a comprehensive section on the topic: "{topic}" to post on linked in.
+    Target audience: {audience_level} level readers on Linked In.
     Make sure you find any interesting and latest relevant information.
     For your refference, current year: {current_year}
     Your content should:
@@ -9,7 +9,7 @@ write_section_task:
     2. Explain all key concepts clearly with examples
     3. Include practical applications or exercises where appropriate
     4. End with a summary of key points
-    5. Be approximately 500-1500 words in length depends upon the topic, complexity and audience level
+    5. Be approximately 2500-3500 words in length depends upon the topic, complexity and audience level, but ensure 2500 words minimum.
   expected_output: >
     A well-structured, comprehensive section in Markdown format that thoroughly
     explains the {topic} and is appropriate for the target audience.
@@ -19,7 +19,7 @@ review_section_task:
   description: >
     Review and improve the generated content on "{topic}":
 
-    Target audience: {audience_level} level learners
+    Target audience: {audience_level} level readers on Linked In.
 
     Latest Year: {current_year}
 

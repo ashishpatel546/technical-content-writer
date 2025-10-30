@@ -1,5 +1,7 @@
 import os
 import time
+import asyncio
+import threading
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -50,6 +52,8 @@ class ContentGeneraterFlow(Flow[ContentState]):
 
     @start()
     def generate_content(self, state: ContentState):
+        self.state.topic = state.topic
+        self.state.audience_level = state.audience_level
         print("Generating content")
         crew = ContentCrew().crew()
         result = crew.kickoff(inputs={"topic": state.topic, "audience_level": state.audience_level, "current_year": state.current_year})
@@ -61,7 +65,7 @@ class ContentGeneraterFlow(Flow[ContentState]):
                 
 
     def process_content(self, content):
-        """Process content to clean up markdown formatting"""
+        """Process content to clean up Markdown formatting"""
         if content is None:
             return ""
             
@@ -81,20 +85,23 @@ class ContentGeneraterFlow(Flow[ContentState]):
 
     @listen(generate_content)
     def serve_content(self, state):
-        content = self.process_content(state.content)
+        self.state.topic = state.topic
+        self.state.audience_level = state.audience_level
+        self.state.content = state.content
+        content = self.process_content(self.state.content)
         print('____________________________________________________________')
         print(content)
         print('____________________________________________________________')
-        return content
+        return self.state
     
     @listen(generate_content)
     def stream_content(self, state, delay=0.5):
         """Stream content in chunks with a delay between paragraphs"""
         content = self.process_content(state.content)
 
-        #Write the content to a file for debugging purposes
-        with open(f"content_folder_{state.topic}", "w") as f:
-            f.write(content)
+        # Start background file writing
+        self._write_content_async(content, state.topic)
+
         paragraphs = content.split('\n\n')
         
         result = ""
@@ -103,7 +110,33 @@ class ContentGeneraterFlow(Flow[ContentState]):
                 result += paragraph + "\n\n"
                 time.sleep(delay)  # Delay between chunks
                 yield result  # Each yield must be a string, not a generator object
+
+    def _write_content_async(self, content, topic):
+        """Write content to file asynchronously in background"""
+        def write_file():
+            # Ensure we have a valid topic name
+            topic_name = topic if topic else "default_topic"
+            
+            if not os.path.exists("content_folder"):
+                os.makedirs("content_folder")
+            
+            if not content:
+                print("No content to write to file.")
+                return
+            
+            # Create timestamp format: YYYYMMDD_HHMMSS
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"{timestamp}_{topic_name}.md"
+            
+            with open(f"content_folder/{filename}", "w") as f:
+                f.write(content)
+            
+            print(f"Content saved to: content_folder/{filename}")
         
+        # Run in background thread
+        thread = threading.Thread(target=write_file)
+        thread.daemon = True
+        thread.start()
 
 generator_flow = ContentGeneraterFlow()
 def kickoff():
